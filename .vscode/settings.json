@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/f64857f7-9e21-45ed-b635-8a90b7ca7d62/resourceGroups/appsvc_linux_eastus/providers/Microsoft.Web/sites/InboxGenieBackend1",
+    "appService.deploySubpath": "backend"
+}

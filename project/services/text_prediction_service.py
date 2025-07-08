@@ -1,27 +1,50 @@
-
 import openai
-from AppConfig import OPENAI_API_KEY  # API key from AppConfig
+from AppConfig.py import AZURE_OPENAI_API_KEY, AZURE_OPENAI_ENDPOINT  # Azure API key and endpoint from AppConfig
 
-openai.api_key = OPENAI_API_KEY
+# Set the Azure OpenAI API key and endpoint
+openai.api_key = AZURE_OPENAI_API_KEY
+openai.api_base = AZURE_OPENAI_ENDPOINT  # Set the Azure OpenAI endpoint
 
-def generate_email_response(subject, sender, previous_conversation=""):
-    """Generate email response suggestion based on subject and sender"""
-
-    # Create a prompt for generating a response
-    prompt = f"Write a professional email response to the following email from {sender}. Subject: {subject}. Previous conversation: {previous_conversation}"
+def generate_email_response(subject: str, sender: str, previous_conversation: str = "") -> str:
+    """
+    Generate a professional email response based on the subject, sender, and previous conversation.
     
-    # Request the model to generate a response
-    response = openai.Completion.create(
-        model="gpt-3.5-turbo",  # Or gpt-4 if available
-        prompt=prompt,
-        max_tokens=150
+    Args:
+        subject (str): The subject of the email.
+        sender (str): The sender's email address.
+        previous_conversation (str, optional): The prior email conversation or context. Defaults to an empty string.
+    
+    Returns:
+        str: The generated email response.
+    """
+    
+    # Construct the prompt for the model
+    prompt = (
+        f"Write a professional email response to the following email from {sender}. "
+        f"Subject: {subject}. Previous conversation: {previous_conversation}"
     )
+    
+    try:
+        # Request the model to generate a response using Azure OpenAI API
+        response = openai.Completion.create(
+            engine="text-davinci-003",  # Use the desired engine (can be replaced with gpt-4 if available)
+            prompt=prompt,
+            max_tokens=150
+        )
+        
+        # Return the generated response text
+        return response.choices[0].text.strip()
 
-    return response.choices[0].text.strip()
+    except openai.error.OpenAIError as e:
+        # Handle any API errors (e.g., network issues or invalid credentials)
+        print(f"Error generating response: {e}")
+        return "Sorry, we encountered an error while generating the response."
 
 # Example Usage
 subject = "Meeting Request"
 sender = "example@domain.com"
 previous_conversation = "Hi, I would like to schedule a meeting."
+
 response = generate_email_response(subject, sender, previous_conversation)
 print(f"Suggested Response: {response}")
+
