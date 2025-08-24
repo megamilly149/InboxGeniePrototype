@@ -1,6 +1,6 @@
 # main.py
 
-import pinecone
+
 import openai
 from appconfig import AZURE_OPENAI_API_KEY, AZURE_OPENAI_ENDPOINT, PINECONE_API_KEY, PINECONE_ENVIRONMENT
 
@@ -8,9 +8,6 @@ from appconfig import AZURE_OPENAI_API_KEY, AZURE_OPENAI_ENDPOINT, PINECONE_API_
 openai.api_key = AZURE_OPENAI_API_KEY
 openai.api_base = AZURE_OPENAI_ENDPOINT  # Setting the endpoint for Azure OpenAI
 
-# Pinecone setup
-pinecone.init(api_key=PINECONE_API_KEY, environment=PINECONE_ENVIRONMENT)
-index = pinecone.Index("your_index_name")  # Replace with your actual index name
 
 # Example of using both Azure OpenAI and Pinecone
 def generate_email_response(subject, sender, previous_conversation=""):
